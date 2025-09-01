@@ -38,13 +38,12 @@ def handle_hello():
 @app.route('/members/<int:id>', methods=['GET'])
 def handle_get_member(id):
     member = jackson_family.get_member(id)
-    print(member)
-    return member,200
+    return jsonify(member),200
 
 @app.route('/members' , methods=['POST'])
 def handle_add_member():
     member = request.get_json()
-    return jackson_family.add_member(member), 200
+    return jsonify(jackson_family.add_member(member)), 200
 
 @app.route('/members/<int:id>', methods=['DELETE'])
 def handle_delete_member(id):

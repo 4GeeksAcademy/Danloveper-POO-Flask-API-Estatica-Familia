@@ -42,14 +42,16 @@ class FamilyStructure:
     def add_member(self, member):
         ## You have to implement this method
         ## Append the member to the list of _members
-        self._members.append({
+        new_member = {
             'id': self._generate_id(),
             "first_name": member.get('first_name'),
             "last_name": self.last_name,
             "age": member.get('age'),
             "lucky_numbers": member.get('lucky_numbers', None)
-        })
-        return member
+        }
+
+        self._members.append(new_member)
+        return new_member
 
     def delete_member(self, id):
         ## You have to implement this method
