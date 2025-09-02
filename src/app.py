@@ -33,21 +33,45 @@ def sitemap():
 def handle_hello():
     # This is how you can use the Family datastructure by calling its methods
     members = jackson_family.get_all_members()
-    return jsonify(members), 200
+    try:
+        return jsonify(members), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
-@app.route('/members/<int:id>', methods=['GET'])
+@app.route('/members/<id>', methods=['GET'])
 def handle_get_member(id):
-    member = jackson_family.get_member(id)
+    
+    if not id.isdigit():
+        return jsonify('El id del miembro debe ser un numero'), 400
+
+    member = jackson_family.get_member(int(id))
+    
+    if member == None:
+        return jsonify('No se encuentra el miembro con ese id'), 404
+    
     return jsonify(member),200
 
 @app.route('/members' , methods=['POST'])
 def handle_add_member():
     member = request.get_json()
+    member_keys = ['first_name','age','lucky_numbers']
+    
+    if type(member) != dict:
+        return jsonify('Los datos deben estar en formato json'), 400
+    elif member_keys != member.keys():
+        return jsonify('El miembro no corresponde con la información solicitada'), 400
+
     return jsonify(jackson_family.add_member(member)), 200
 
-@app.route('/members/<int:id>', methods=['DELETE'])
+@app.route('/members/<id>', methods=['DELETE'])
 def handle_delete_member(id):
     done = jackson_family.delete_member(id)
+
+    if not id.isdigit():
+        return jsonify('El id del miembro debe ser un numero'), 400
+    
+    elif done.get('done') == False:
+        return jsonify('El id del miembro no se encontro'), 404
 
     return jsonify(done), 200
 
