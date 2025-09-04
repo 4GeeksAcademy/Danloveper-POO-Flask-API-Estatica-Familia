@@ -53,24 +53,23 @@ def handle_get_member(id):
 
 @app.route('/members' , methods=['POST'])
 def handle_add_member():
-    member = request.get_json()
+    member = request.get_json(silent=True)
     member_keys = ['first_name','age','lucky_numbers']
     
     if type(member) != dict:
         return jsonify('Los datos deben estar en formato json'), 400
-    elif member_keys != member.keys():
-        return jsonify('El miembro no corresponde con la información solicitada'), 400
 
     return jsonify(jackson_family.add_member(member)), 200
 
 @app.route('/members/<id>', methods=['DELETE'])
 def handle_delete_member(id):
-    done = jackson_family.delete_member(id)
 
     if not id.isdigit():
         return jsonify('El id del miembro debe ser un numero'), 400
     
-    elif done.get('done') == False:
+    done = jackson_family.delete_member(int(id))
+    
+    if done.get('done') == False:
         return jsonify('El id del miembro no se encontro'), 404
 
     return jsonify(done), 200
